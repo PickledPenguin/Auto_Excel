@@ -22,7 +22,7 @@ def wait():
     time.sleep(WAIT_DELAY_IN_SECONDS)
 
 
-def read_excel_data_to_numpy(excel_filename):
+def read_excel_data_to_numpy(excel_filename, ignore_header):
     """ Reads the given Excel file's data and returns the data in the form of a numpy array """
 
     # change directory to the Excel file directory
@@ -30,9 +30,15 @@ def read_excel_data_to_numpy(excel_filename):
 
     sheet_to_numpy_map = {}
 
-    # for every sheet in the Excel file
-    for sheet_name in pd.ExcelFile(excel_filename).sheet_names:
-        sheet_to_numpy_map[sheet_name] = pd.read_excel(excel_filename, sheet_name=sheet_name).to_numpy()
+    # if we want to ignore the header of the file
+    if ignore_header:
+        # for every sheet in the Excel file
+        for sheet_name in pd.ExcelFile(excel_filename).sheet_names:
+            sheet_to_numpy_map[sheet_name] = pd.read_excel(excel_filename, sheet_name=sheet_name, header=None).to_numpy()
+    else:
+        # for every sheet in the Excel file
+        for sheet_name in pd.ExcelFile(excel_filename).sheet_names:
+            sheet_to_numpy_map[sheet_name] = pd.read_excel(excel_filename, sheet_name=sheet_name).to_numpy()
 
     os.chdir("..")
     print("\n------------------------------------------------------")
@@ -60,9 +66,7 @@ def custom_time_format(excel_data, sheet, col, row, format_string):
         return result
 
 
-def execute_config(config_json, excel_data):
-    """ Executes the waypoints given by the user for a specific Excel class """
-
+def execute_waypoints(config_json, excel_data, sheet, row):
     print(f"Executing waypoints")
     for i in config_json:
         # ignore the WAIT_DELAY_IN_SECONDS and DATETIME_FORMAT_STR entries
@@ -94,23 +98,43 @@ def execute_config(config_json, excel_data):
             kb.tap(Key.enter)
         # insert excel data
         elif config_json[i]["type"] == "insert-data":
-            sheet = config_json[i]["sheet"]
-            col = config_json[i]["excel_col"] - 1
-            row = config_json[i]["excel_row"] - 1
-            print("inserting excel data at [sheet: %s, column %d, row %d]" % (sheet, col, row))
-            if isinstance(excel_data[sheet][col][row], datetime.datetime):
-                print("excel datetime data detected")
-                # type the formatted Excel data at the specified sheet, column and row
-                kb.type(custom_time_format(excel_data, sheet, col, row, DATETIME_FORMAT_STR))
+
+            if config_json["EXECUTION_TYPE"] == "row-based":
+                continue
+            # if Execution type is file-based or anything else
             else:
-                # type the Excel data at the specified sheet, column, and row
-                kb.type(str(excel_data[sheet][col][row]))
+                col = config_json[i]["excel_col"] - 1
+
+                if sheet is None:
+                    sheet = config_json[i]["sheet"]
+                if row is None:
+                    row = config_json[i]["excel_row"] - 1
+
+                print("inserting excel data at [sheet: %s, column %d, row %d]" % (sheet, col, row))
+                if isinstance(excel_data[sheet][col][row], datetime.datetime):
+                    print("excel datetime data detected")
+                    # type the formatted Excel data at the specified sheet, column and row
+                    kb.type(custom_time_format(excel_data, sheet, col, row, DATETIME_FORMAT_STR))
+                else:
+                    # type the Excel data at the specified sheet, column, and row
+                    kb.type(str(excel_data[sheet][col][row]))
         # wait
         elif config_json[i]["type"] == "wait":
             print("waiting for %d seconds" % config_json[i]["seconds"])
             time.sleep(config_json[i]["seconds"])
 
         wait()
+
+
+def execute_config(config_json, excel_data):
+    """ Executes the waypoints given by the user for a specific Excel class """
+
+    if config_json["EXECUTION_TYPE"] == "row-based":
+        for sheet in excel_data:
+            for row in excel_data[sheet]:
+                execute_waypoints(config_json, excel_data, sheet, row)
+    else:
+        execute_waypoints(config_json, excel_data, None, None)
 
 
 def execute(data):
@@ -124,8 +148,13 @@ def execute(data):
     # Set the datetime format string to the user's set datetime format string
     DATETIME_FORMAT_STR = data["DATETIME_FORMAT_STR"]
 
+    # for every file in the Excel directory
     for file in EXCEL_FILENAMES:
-        execute_config(data, read_excel_data_to_numpy(file))
+        # read the Excel data for the current Excel file to a numpy array
+        # Pass whether the configuration is set to ignore the header, or the first row.
+        # execute the configuration waypoints using the returned numpy array
+        execute_config(data, read_excel_data_to_numpy(file, data["IGNORE_HEADER"]))
+
     print("\n Completed Excel data extraction and execution :)")
 
 

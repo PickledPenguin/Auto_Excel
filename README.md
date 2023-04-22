@@ -37,7 +37,7 @@ To configure the script, type the following bash command in the project director
 
 "python3 ./setup.py"
 
-You will be able to configure the script's wait time between actions, datetime format string, and waypoints.
+You will be able to configure the script's wait time between actions, datetime format string, execution type, and waypoints.
 
 *Setting wait time*: 
 
@@ -46,6 +46,27 @@ The wait time is the time (in seconds) between any meaningful action the script 
 *Setting datetime format string*: 
 
 The datetime format string is a string that uses certain format codes as standard directives for specifying the format in which you want to represent datetime type data. A comprehensive list of all the format codes can be found at this link: https://strftime.org Using the format codes, you can "insert" parts of the datetime data into your desired format. For example the format string: "%H:%M %p" will format the data like this: "**Hour**:**Minute** **AM or PM** and the format string: "Student completed work on %m/%d/%Y, which was a %A" will format the data like this: "Student completed work on **month**/**day**/**year**, which was a **Day of the week**"
+
+*Setting execution type*: 
+
+This program supports 2 execution types: file-based execution and row-based execution. Here is how each works: 
+
+File-based execution: The script will run the configured waypoints for each Excel file in the Excel directory.
+This option is meant to be used for cases where your Excel files have only one subset of data contained within them. For example, if you were entering employee hours contained in dozens of Excel files, each containing a spreadsheet with the hours that an employee worked for the week, you would use file-based execution to execute the waypoints for each Excel file.
+
+Row-based execution: The script will run the configured waypoints for each row in each sheet in each Excel file in the Excel directory
+This option is meant to be used for cases where your Excel files have multiple subsets of data contained within them, organized by rows. For example, if you were entering employee hours contained in a single Excel file with each employee's hours listed on a single row, you would use row-based execution to execute the waypoints for each row in the Excel file. 
+Row-based execution executes for every sheet in each Excel file. For example, if you have an Excel file containing employee hours organized by row, with different departments listed on different sheets, row-based execution will execute for each row in each sheet in the Excel file. 
+Row-based execution also executes for every Excel file in the Excel directory. For example, if you have an Excel file containing employee hours organized by row, with different departments listed on different sheets, and an Excel file for every company location, row-based execution will execute for each row in each sheet, in each file.
+
+*Setting header configuration*:
+
+A lot of Excel files will have the first row as a header. This is something that you don't want the program to read or execute, especially for row-based execution. This setting allows you to set the program to either ignore or keep the first row of every sheet in every Excel file.
+
+For row-based execution, if you have a header, you should set the header configuration to "ignore" so you don't input the header data in the first row. However, if you have no header and your files just contain data, you should set the header configuration to "keep" so you don't lose the data in the first row.
+
+NOTE: If the header configuration is set to "ignore", it will not read in the first row at all, shifting all rows up by one. This means that any data in row 2 will now be stored in row 1, row 3 will be stored in row 2 etc.
+Because of this, if you are using file-based execution, I would recommend setting the header configuration to "keep" so that the rows and columns the program reads in match exactly with your Excel file to avoid confusion when you manually input the sheet, row, and column of the section that your data is contained in.
 
 *Setting up "waypoints"*: 
 
@@ -63,8 +84,8 @@ Each type of waypoint has a character (a key on a keyboard) associated with it. 
 'p' = Paste (Type out a specified text)
 After hitting this key, return to the python window to input the desired text. After this is complete, the script will resume listening for other waypoints.
 
-'i' = Insert Data (Insert / type data in a specified sheet, column, and row of the current Excel file)
-After hitting this key, return to the python window to input the Excel sheet that the data you want to be inserted is in, as well as the column and row of the cell in that sheet that the data is located at. If the data is a datetime type data, it will be formatted according to the format string you configured, or as a default string if no format string is configured. After this is complete, the script will resume listening for other waypoints.
+'i' = Insert Data (Insert / type data from the current Excel file)
+After hitting this key, return to the python window to input the Excel sheet that the data you want to be inserted is in, as well as the section in that sheet that the data is located at. If you are using file-based execution, enter the column and row that the data in contained in. If you are using row-based execution, enter the column that the data is contained in each row. If the data is a datetime type data, it will be formatted according to the format string you configured, or as a default string if no format string is configured. After this is complete, the script will resume listening for other waypoints.
 
 'w'= Wait (Wait for a specified number of seconds). 
 After hitting this key, return to the python window to input the desired number of seconds. After this is complete, the script will resume listening for other waypoints.

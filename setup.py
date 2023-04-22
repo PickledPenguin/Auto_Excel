@@ -19,27 +19,25 @@ def optional_set_wait_time():
 
     wait_configuration = {"WAIT_DELAY_IN_SECONDS": 0.5}
 
-    if input("Set wait time between actions? (y/n): ") == 'y':
-
-        while True:
-            wait_time = input("what is your preferred wait time (between 0.0 and 100.0) in seconds between actions? ("
-                              "Press enter for default value of 0.5 seconds): ")
-            try:
-                if wait_time == '':
-                    print("Wait time set to default value of 0.5 seconds")
-                    wait_time = 0.5
-                    break
-                elif not (0.0 <= float(wait_time) <= 100.0):
-                    print(f"Wait time must be between 0.0 and 100.0 seconds (you entered: {float(wait_time)} seconds)")
-                    continue
-                else:
-                    print(f"Wait time set to {float(wait_time)} seconds")
-                    break
-            except (ValueError, NameError):
-                print(f"Wait time must be a number between 0.0 and 100.0 (you entered: {float(wait_time)})")
+    while True:
+        wait_time = input("Enter your your preferred wait time (between 0.0 and 100.0) in seconds between actions. ("
+                          "Press enter for default value of 0.5 seconds): ")
+        try:
+            if wait_time == '':
+                print("Wait time set to default value of 0.5 seconds")
+                wait_time = 0.5
+                break
+            elif not (0.0 <= float(wait_time) <= 100.0):
+                print(f"Wait time must be between 0.0 and 100.0 seconds (you entered: {float(wait_time)} seconds)")
                 continue
+            else:
+                print(f"Wait time set to {float(wait_time)} seconds")
+                break
+        except (ValueError, NameError):
+            print(f"Wait time must be a number between 0.0 and 100.0 (you entered: {float(wait_time)})")
+            continue
 
-        wait_configuration["WAIT_DELAY_IN_SECONDS"] = float(wait_time)
+    wait_configuration["WAIT_DELAY_IN_SECONDS"] = float(wait_time)
 
     return wait_configuration
 
@@ -49,21 +47,67 @@ def optional_set_datetime_format():
 
     format_configuration = {"DATETIME_FORMAT_STR": "default"}
 
-    if input("Set format string for datetime type data? (y/n): ") == 'y':
+    format_string = input("Enter the format string for datetime type data (press enter for default string "
+                          "conversion): ")
+    # if enter was pressed
+    if format_string == '':
+        print("Format set to default string conversion")
+        format_string = 'default'
+    # if there is a format string
+    else:
+        print(f"Format set to {format_string}")
 
-        format_string = input("Enter the format string for datetime type data (press enter for default string "
-                              "conversion): ")
-        # if enter was pressed
-        if format_string == '':
-            print("Format set to default string conversion")
-            format_string = 'default'
-        # if there is a format string
-        else:
-            print(f"Format set to {format_string}")
-
-        format_configuration["DATETIME_FORMAT_STR"] = format_string
+    format_configuration["DATETIME_FORMAT_STR"] = format_string
 
     return format_configuration
+
+
+def optional_set_execution_type():
+    """ Set the configuration execution type """
+
+    execution_configuration = {"EXECUTION_TYPE": "file"}
+
+    print("This program supports 2 execution types: file-based execution and row-based execution.\n"
+          "file-based execution: Run the waypoint configuration for each excel file in the Excel directory\n"
+          "row-based execution: Run the waypoint configuration for each row in each excel file in the Excel directory\n")
+
+    execution_type = input("Enter your preferred execution type. Enter \"f\" for file-based execution, \"r\" for "
+                           "row-based execution, or press enter for default (file-based execution): ")
+
+    if execution_type == 'f':
+        print("Execution type set to file-based execution")
+        execution_type = 'file-based'
+    elif execution_type == 'r':
+        print("Execution type set to row-based execution")
+        execution_type = 'row-based'
+    else:
+        print("Execution type set to default file-based execution")
+        execution_type = 'file-based'
+
+    execution_configuration["EXECUTION_TYPE"] = execution_type
+
+    return execution_configuration
+
+
+def optional_set_ignore_header():
+
+    header_configuration = {"IGNORE_HEADER": False}
+
+    ignore_header = input("Enter your desired header setting. Enter \"i\" to ignore the first row of every Excel "
+                          "file, \"k\" to keep the first row of every Excel file, or pressed enter for default (keep "
+                          "first row of every Excel file)")
+
+    if ignore_header == "i":
+        print("\"i\" pressed, ignoring first row of every Excel file")
+        header_configuration["IGNORE_HEADER"] = True
+    elif ignore_header == "k":
+        print("\"k\" pressed, keeping first row of every Excel file")
+        header_configuration["IGNORE_HEADER"] = False
+    else:
+        print("\"enter\" pressed, using default of keeping first row of every Excel file")
+        header_configuration["IGNORE_HEADER"] = False
+
+    return header_configuration
 
 
 def on_release(key):
@@ -244,65 +288,101 @@ def input_data():
 def config():
     """ Run configuration of wait time and waypoints and store collected data in the config.json file """
 
-    global config_counter
+    global config_counter, configuration
 
-    # set the wait time between actions
-    configuration["WAIT_DELAY_IN_SECONDS"] = optional_set_wait_time()["WAIT_DELAY_IN_SECONDS"]
-    configuration["DATETIME_FORMAT_STR"] = optional_set_datetime_format()["DATETIME_FORMAT_STR"]
+    if configuration == {}:
+        # if this is the first time configuring, set the default values
+        configuration = {"WAIT_DELAY_IN_SECONDS": 0.5, "DATETIME_FORMAT_STR": "default", "EXECUTION_TYPE": "file-based", "IGNORE_HEADER": False}
 
-    # reconfigure waypoints
-    if input("Set waypoints? (y/n): ") == 'y':
-        print("------------------------------------------------------")
-        print("Now listening for waypoints. Move your mouse to a point of interest on your screen and hit one of the "
-              "following keys to create a waypoint: \n\n \'c\' = Click (Click the left mouse button once at that point)"
-              "\n\n \'d\' = Double Click (Double-click the left mouse button at that point) \n\n \'t\' = Tab (hit the "
-              "Tab key) \n\n \'e\' = Enter (hit the Enter key) \n\n \'p\' = Paste (Paste a specified text). After "
-              "hitting this key, return to the python window to input the desired text. When this is complete, "
-              "the script will resume listening for other waypoints. \'i\' = Insert Data (Insert / type out data in a "
-              "specified column and row of the current Excel file). After hitting this key, return to the python "
-              "window to input the desired column and row. When this is complete, the script will resume listening "
-              "for other waypoints. \n\n \'w\' = wait (Wait for a specified number of seconds). After hitting this "
-              "key, return to the python window to input the desired wait time. When this is complete, the script "
-              "will resume listening for other waypoints. \n\n Once you are finished, hit esc to end listening and "
-              "create the config.json file.")
-        # Collect events until released
-        with keyboard.Listener(on_release=on_release) as listener:
-            listener.join()
-        input_data()
+    while True:
 
-        config_counter = 0
+        print("\n1.) Set wait time between actions \n2.) Set format string for datetime type data \n3.) Set execution "
+              "type (row-based or file-based)\n4.) Set header (ignore header or keep header) \n5.) Set waypoints\n6.) "
+              "Exit")
+
+        response = input("Select an option: ")
+        # make it look neat
+        print()
+
+        if response == '1':
+            configuration["WAIT_DELAY_IN_SECONDS"] = optional_set_wait_time()["WAIT_DELAY_IN_SECONDS"]
+
+        elif response == '2':
+            configuration["DATETIME_FORMAT_STR"] = optional_set_datetime_format()["DATETIME_FORMAT_STR"]
+
+        elif response == '3':
+            configuration["EXECUTION_TYPE"] = optional_set_execution_type()["EXECUTION_TYPE"]
+
+        elif response == '4':
+            configuration["IGNORE_HEADER"] = optional_set_ignore_header()["IGNORE_HEADER"]
+
+        # reconfigure waypoints
+        elif response == '5':
+            print("------------------------------------------------------")
+
+            print("Now listening for waypoints. Move your mouse to a point of interest on your screen and hit one of "
+                  "the following keys to create a waypoint:\n")
+            print("\'c\' = Click (Click the left mouse button once at that point)\n")
+            print("\'d\' = Double Click (Double-click the left mouse button at that point)\n")
+            print("\'t\' = Tab (hit the Tab key)\n")
+            print("\'e\' = Enter (hit the Enter key)\n")
+            print("\'p\' = Paste (Paste a specified text). After hitting this key, return to the python window to "
+                  "input the desired text. When this is complete, the script will resume listening for other "
+                  "waypoints.\n")
+            print("\'i\' = Insert Data (Insert / type out data in a specified section of the current Excel "
+                  "file). After hitting this key, return to the python window to input the desired section."
+                  "(for file-based execution, input the desired sheet, column and row)"
+                  "(for row-based execution, input the desired column) "
+                  "When this is complete, the script will resume listening for other waypoints.\n")
+            print("\'w\' = wait (Wait for a specified number of seconds). After hitting this "
+                  "key, return to the python window to input the desired wait time. When this is complete, the script "
+                  "will resume listening for other waypoints.\n")
+            print("Once you are finished, hit esc to end listening and "
+                  "create the config.json file.\n")
+
+            # Collect events until released
+            with keyboard.Listener(on_release=on_release) as listener:
+                listener.join()
+            input_data()
+
+            config_counter = 0
+
+        else:
+            break
 
     return configuration
 
 
 def reset_config():
-    """ Reset the wait time / waypoint configuration """
+    """ Reset the configuration """
+
+    global configuration
 
     filename = "config.json"
 
-    # if the user wants to reset the configuration
-    if input("Reconfigure / Overwrite program configuration? (y/n): ") == 'y':
-        # RUN SETUP SCRIPT
-        config_data = config()
-        # remove the previous config.json file
+    # load the old configuration from config.json so the user can modify it
+    with open(filename, 'r') as f:
+        configuration = json.load(f)
+
+    # RUN SETUP SCRIPT
+    config()
+
+    if configuration != {}:
+        # remove the previous config.json file and make a new one
         try:
             os.remove(filename)
             print("Replacing config.json file:")
         except FileNotFoundError:
             print("No config.json file to remove, continuing")
+
         with open(filename, 'a+') as f:
             # create new config.json file
-            json.dump(config_data, f, indent=4)
+            json.dump(configuration, f, indent=4)
 
-        # get the new configuration from config.json
-        with open(filename, 'r') as f:
-            return json.load(f)
-    # if the user does not want to reset configuration
     else:
-        # get the configuration from config.json
-        with open(filename, 'r') as f:
+        print("New configuration was empty, returning previous configuration")
 
-            return json.load(f)
+    return configuration
 
 
 if __name__ == "__main__":
