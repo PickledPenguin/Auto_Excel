@@ -297,8 +297,8 @@ def config():
     while True:
 
         print("\n1.) Set wait time between actions \n2.) Set format string for datetime type data \n3.) Set execution "
-              "type (row-based or file-based)\n4.) Set header (ignore header or keep header) \n5.) Set waypoints\n6.) "
-              "Exit")
+              "type (row-based or file-based)\n4.) Set header configuration (ignore header or keep header) \n5.) Set "
+              "waypoints\n6.) Exit")
 
         response = input("Select an option: ")
         # make it look neat

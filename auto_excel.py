@@ -170,7 +170,7 @@ def get_config_data():
 def execution_countdown(data):
     """ Start a countdown until execution to allow the user to move mouse over to the desired screen """
 
-    if input("Run program using current configuration (y/n): ") == 'y':
+    if input("Run program using current config.json file? (y/n): ") == 'y':
         print("Countdown to executing waypoints:")
         for i in range(5):
             print(5 - i)
