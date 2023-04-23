@@ -34,11 +34,11 @@ def read_excel_data_to_numpy(excel_filename, ignore_header):
     if ignore_header:
         # for every sheet in the Excel file
         for sheet_name in pd.ExcelFile(excel_filename).sheet_names:
-            sheet_to_numpy_map[sheet_name] = pd.read_excel(excel_filename, sheet_name=sheet_name, header=None).to_numpy()
+            sheet_to_numpy_map[sheet_name] = pd.read_excel(excel_filename, sheet_name=sheet_name).to_numpy()
     else:
         # for every sheet in the Excel file
         for sheet_name in pd.ExcelFile(excel_filename).sheet_names:
-            sheet_to_numpy_map[sheet_name] = pd.read_excel(excel_filename, sheet_name=sheet_name).to_numpy()
+            sheet_to_numpy_map[sheet_name] = pd.read_excel(excel_filename, sheet_name=sheet_name, header=None).to_numpy()
 
     os.chdir("..")
     print("\n------------------------------------------------------")
@@ -66,62 +66,55 @@ def custom_time_format(excel_data, sheet, col, row, format_string):
         return result
 
 
-def execute_waypoints(config_json, excel_data, sheet, row):
+def execute_waypoints(config_json, excel_data, sheet, col):
     print(f"Executing waypoints")
-    for i in config_json:
-        # ignore the WAIT_DELAY_IN_SECONDS and DATETIME_FORMAT_STR entries
-        if i == "WAIT_DELAY_IN_SECONDS" or i == "DATETIME_FORMAT_STR":
-            continue
-        # click
-        elif config_json[i]["type"] == "click":
-            print("Clicking at the point: [%f, %f]" % (config_json[i]["pos"][0], config_json[i]["pos"][1]))
-            Mouse.position = config_json[i]["pos"]
+    for i in config_json["WAYPOINTS"]:
+        # Click
+        if config_json["WAYPOINTS"][i]["type"] == "click":
+            print("Clicking at the point: [%f, %f]" % (config_json["WAYPOINTS"][i]["pos"][0], config_json["WAYPOINTS"][i]["pos"][1]))
+            Mouse.position = config_json["WAYPOINTS"][i]["pos"]
             wait()
             Mouse.click(Button.left, 1)
         # double click
-        elif config_json[i]["type"] == "double-click":
-            print("Double clicking at the point: [%f, %f]" % (config_json[i]["pos"][0], config_json[i]["pos"][1]))
-            Mouse.position = config_json[i]["pos"]
+        elif config_json["WAYPOINTS"][i]["type"] == "double-click":
+            print("Double clicking at the point: [%f, %f]" % (config_json["WAYPOINTS"][i]["pos"][0], config_json["WAYPOINTS"][i]["pos"][1]))
+            Mouse.position = config_json["WAYPOINTS"][i]["pos"]
             wait()
             Mouse.click(Button.left, 2)
         # paste a string
-        elif config_json[i]["type"] == "paste":
+        elif config_json["WAYPOINTS"][i]["type"] == "paste":
             print("pasting \"%s\"")
-            kb.type(config_json[i]["paste"])
+            kb.type(config_json["WAYPOINTS"][i]["paste"])
         # tab
-        elif config_json[i]["type"] == "tab":
+        elif config_json["WAYPOINTS"][i]["type"] == "tab":
             print("pressing the tab key")
             kb.tap(Key.tab)
         # enter
-        elif config_json[i]["type"] == "enter":
+        elif config_json["WAYPOINTS"][i]["type"] == "enter":
             print("pressing the enter key")
             kb.tap(Key.enter)
         # insert excel data
-        elif config_json[i]["type"] == "insert-data":
+        elif config_json["WAYPOINTS"][i]["type"] == "insert-data":
 
-            if config_json["EXECUTION_TYPE"] == "row-based":
-                continue
-            # if Execution type is file-based or anything else
+            if config_json["EXECUTION_TYPE"] != "row-based":
+                sheet = config_json["WAYPOINTS"][i]["sheet"]
+                col = config_json["WAYPOINTS"][i]["excel_row"] - 1
+
+            row = config_json["WAYPOINTS"][i]["excel_col"] - 1
+
+            print("inserting excel data at [sheet: %s, column %d, row %d]" % (sheet, col, row))
+            if isinstance(excel_data[sheet][col][row], datetime.datetime):
+                print("datetime data detected")
+                # type the formatted Excel data at the specified sheet, column and row
+                kb.type(custom_time_format(excel_data, sheet, col, row, DATETIME_FORMAT_STR))
             else:
-                col = config_json[i]["excel_col"] - 1
+                # type the Excel data at the specified sheet, column, and row
+                kb.type(str(excel_data[sheet][col][row]))
 
-                if sheet is None:
-                    sheet = config_json[i]["sheet"]
-                if row is None:
-                    row = config_json[i]["excel_row"] - 1
-
-                print("inserting excel data at [sheet: %s, column %d, row %d]" % (sheet, col, row))
-                if isinstance(excel_data[sheet][col][row], datetime.datetime):
-                    print("excel datetime data detected")
-                    # type the formatted Excel data at the specified sheet, column and row
-                    kb.type(custom_time_format(excel_data, sheet, col, row, DATETIME_FORMAT_STR))
-                else:
-                    # type the Excel data at the specified sheet, column, and row
-                    kb.type(str(excel_data[sheet][col][row]))
         # wait
-        elif config_json[i]["type"] == "wait":
-            print("waiting for %d seconds" % config_json[i]["seconds"])
-            time.sleep(config_json[i]["seconds"])
+        elif config_json["WAYPOINTS"][i]["type"] == "wait":
+            print("waiting for %d seconds" % config_json["WAYPOINTS"][i]["seconds"])
+            time.sleep(config_json["WAYPOINTS"][i]["seconds"])
 
         wait()
 
@@ -131,7 +124,7 @@ def execute_config(config_json, excel_data):
 
     if config_json["EXECUTION_TYPE"] == "row-based":
         for sheet in excel_data:
-            for row in excel_data[sheet]:
+            for row in range(0, len(excel_data[sheet])):
                 execute_waypoints(config_json, excel_data, sheet, row)
     else:
         execute_waypoints(config_json, excel_data, None, None)

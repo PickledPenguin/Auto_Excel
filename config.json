@@ -2,10 +2,11 @@
     "WAIT_DELAY_IN_SECONDS": 0.5,
     "DATETIME_FORMAT_STR": "default",
     "EXECUTION_TYPE": "row-based",
-    "0": {
-        "type": "insert-data",
-        "sheet": "Sheet1",
-        "excel_col": 1,
-        "excel_row": 1
+    "IGNORE_HEADER": true,
+    "WAYPOINTS": {
+        "0": {
+            "type": "insert-data",
+            "excel_col": 1
+        }
     }
 }
