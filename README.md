@@ -71,7 +71,7 @@ This script supports 2 execution types: file-based execution and row-based execu
 File-based execution runs the waypoint configuration you set up for every excel *FILE* in the Excel directory. This option would be used when only one subset of data is in each Excel document.
 Row-based execution runs the waypoint configuration you set up for every *ROW* in every excel *FILE* in the Excel directory. This option would be used when multiple subsets of data are contained within each Excel File.
 
-*Set header configuration*
+*Set header configuration*:
 
 This script reads the Header of the Excel file (or the first row of data) by default. If you don't want the header to be read, you can set that here.
 
