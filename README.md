@@ -18,16 +18,16 @@ This flexibility does come with a few drawbacks: The initial setup process can t
 
 # Required Installations
 
-1.) python3 ([link to install python3](https://www.python.org/downloads/))
+1.) python3 [link to install python3](https://www.python.org/downloads/)
 
-2.) pip3 ([link to install pip3](https://pip.pypa.io/en/stable/installation/))
+2.) pip3 [link to install pip3](https://pip.pypa.io/en/stable/installation/)
 
-3.) All modules listed in requirements.txt (https://note.nkmk.me/en/python-pip-install-requirements/)
+3.) All modules listed in requirements.txt [installing requirements](https://note.nkmk.me/en/python-pip-install-requirements/)
 
 
 # Configuring the Script
 
-To configure the script, first open a cmd window ([how to open cmd](https://www.wikihow.com/Open-the-Command-Prompt-in-Windows)) if you have a Windows computer or open a terminal window ([how to open terminal](https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac#:~:text=Terminal%20for%20me-,Open%20Terminal,%2C%20then%20double%2Dclick%20Terminal.)) if you have an Apple or Linux computer. Then navigate to the directory you saved this project to ([how to navigate cmd and terminal](https://www.wikihow.com/Change-Directories-in-Command-Prompt)) and type the following command in the project directory:
+To configure the script, first open a [cmd window](https://www.wikihow.com/Open-the-Command-Prompt-in-Windows) if you have a Windows computer or open a [terminal window](https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac#:~:text=Terminal%20for%20me-,Open%20Terminal,%2C%20then%20double%2Dclick%20Terminal.)) if you have an Apple or Linux computer. Then [navigate to the directory](https://www.wikihow.com/Change-Directories-in-Command-Prompt) you saved this project to and type the following command inside the project directory:
 
 "python3 ./setup.py"
 
