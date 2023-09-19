@@ -39,7 +39,7 @@ The wait time is the time (in seconds) between any meaningful action the script 
 
 *Setting datetime format string*: 
 
-The datetime format string is a string that uses certain format codes as standard directives for specifying the format in which you want to represent datetime type data. A comprehensive list of all the format codes can be found [here] (https://strftime.org) Using the format codes, you can "insert" parts of the datetime data into your desired format. For example, the format string: "%H:%M %p" will format the data like this: "**Hour**:**Minute** **AM or PM**" and the format string: "Student completed work on %m/%d/%Y, which was a %A" will format the data like this: "Student completed work on **month**/**day**/**year**, which was a **Day of the week**"
+The datetime format string is a string that uses certain format codes as standard directives for specifying the format in which you want to represent datetime type data. A comprehensive list of all the format codes can be found [here](https://strftime.org/) Using the format codes, you can "insert" parts of the datetime data into your desired format. For example, the format string: "%H:%M %p" will format the data like this: "**Hour**:**Minute** **AM or PM**" and the format string: "Student completed work on %m/%d/%Y, which was a %A" will format the data like this: "Student completed work on **month**/**day**/**year**, which was a **Day of the week**"
 
 *Setting up "waypoints"*: 
 
