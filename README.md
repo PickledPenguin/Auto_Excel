@@ -68,7 +68,9 @@ Once you are finished, hit the 'esc' key to tell the script to stop listening fo
 ### Setting Execution Type, row-based or file-based:
 
 This script supports 2 execution types: file-based execution and row-based execution.
+
 File-based execution runs the waypoint configuration you set up for every excel *FILE* in the Excel directory. This option would be used when only one subset of data is in each Excel document.
+
 Row-based execution runs the waypoint configuration you set up for every *ROW* in every excel *FILE* in the Excel directory. This option would be used when multiple subsets of data are contained within each Excel File.
 
 ### Set header configuration:
@@ -100,9 +102,8 @@ Since this script interfaces directly with your computer screen, any slight chan
 
 This script executes the waypoints you configured for every Excel file in the "Excel" directory, so it is critical that your configuration brings the script back to the "starting place" so that it can rinse and repeat with the data from the next Excel file.
 
-*Wrong Excel sheet / columns / rows*:
+*Can't Access Excel File*:
 
-The way that python reads Excel files may eliminate "empty whitespace" around the Excel data. So, if the first row in your Excel file is completely blank, this script will not read it and instead treat the second row as the first row, assuming the second row has data. To make sure you have the right column and row, execute a quick test run for a sample Excel file, look at what is printed to the command line out under the Excel data section, find the column and row of the desired data on the array, and use that as your column and row.
 Sometimes errors may arise if the script cannot access the Excel sheet you specified. Make sure the case matches, and you count the columns and rows correctly!
 
 *Wierd Excel data*:
