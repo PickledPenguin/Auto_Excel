@@ -65,6 +65,16 @@ After hitting this key, return to the command window to input the desired number
 
 Once you are finished, hit the 'esc' key to tell the script to stop listening for waypoints and create/edit the config.json file.
 
+*Setting Execution Type, row-based or file-based*:
+
+This script supports 2 execution types: file-based execution and row-based execution.
+File-based execution runs the waypoint configuration you set up for every excel *FILE* in the Excel directory. This option would be used when only one subset of data is in each Excel document.
+Row-based execution runs the waypoint configuration you set up for every *ROW* in every excel *FILE* in the Excel directory. This option would be used when multiple subsets of data are contained within each Excel File.
+
+*Set header configuration*
+
+This script reads the Header of the Excel file (or the first row of data) by default. If you don't want the header to be read, you can set that here.
+
 
 # Running the Script
 
