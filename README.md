@@ -1,6 +1,6 @@
 # Description
 
-This script extracts data from the Excel files in the "Excel" directory and outputs the gathered data for each Excel file according to a configuration set by the user via simulating mouse movement and keypresses.
+This script extracts data from the Excel files in the "Excel" directory and outputs the gathered data for each Excel file according to a configuration set by the user by simulating mouse movement and keypresses.
 
 I have written this README file to be as informative as possible for readers who are not as experienced in handling scripts such as this one and have included links to helpful reasources
 
@@ -12,7 +12,10 @@ This is a script I created for the Rochester Institute of Technology's Software 
 
 # Architecture Details
 
-This script does not determine where to input the Excel data from the external website itself but rather relies on a manual setup process in which the user directs the program to the points of interest (waypoints) on the screen. There are three main reasons I went with this approach: First, I was unable to access the external website while developing this script as it was restricted and only accessible by members of the SE department. Second, in the case that the SE department decides to use a different external website or the original external website is changed or updated, this script would still function, and it would only need to be reconfigured rather than redesigned. Lastly, a waypoint system can be more easily understood by someone newer to running scripts and "coding" in general, as opposed to an xpath approach or another more Website-orented or HMTL-based configuration.
+This script does not determine where to input the Excel data from the external website itself but rather relies on a manual setup process in which the user directs the program to the points of interest (waypoints) on the screen. There are three main reasons I went with this approach: 
+- First, I was unable to access the external website while developing this script as it was restricted and only accessible by members of the SE department.
+- Second, in the case that the SE department decides to use a different external website or the original external website is changed or updated, this script would still function, and it would only need to be reconfigured rather than redesigned.
+- Lastly, a waypoint system can be more easily understood by someone newer to running scripts and "coding" in general, as opposed to an xpath approach or another more Website-orented or HMTL-based configuration.
 This flexibility does come with a few drawbacks: The initial setup process can take a while and the script is dependent on the screen being completely static and consistent. I think these drawbacks are worth the flexibility and simplicity, at least for this solo small-scale project.
 
 
