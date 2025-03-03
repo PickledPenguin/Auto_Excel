@@ -6,7 +6,8 @@ This script automates data extraction from Excel files located in the `Excel` di
 
 ## Project Background
 
-Developed for the Rochester Institute of Technology's Software Engineering department, this script eliminates manual input of student employees' hours from Excel into an external website. It saves time previously spent on repetitive tasks.
+Developed for the Rochester Institute of Technology's Software Engineering department, this script eliminates manual input of student employees' hours from Excel into an external website. It was designed to save hours of work every week previously spent on repetitive tasks. It is also adaptable to other tasks that rely on manually entering Excel data. 
+For example, I personally used this script as a Course Assistant at RIT to automate grade entry from Excel into MyCourses after updates by another assistant and professor confirmation.
 
 ## Architecture Details
 
