@@ -67,11 +67,7 @@ Choose between:
 
 ## Common Issues
 
-- **Non-Static Screen**: Ensure screen stability during operation.
-- **Looping Configuration**: Ensure script returns to the starting position after each cycle.
+- **Non-Static Screen**: Make sure the screen remains untouched and static during operation.
+- **Looping Configuration**: Configure the script to return to the starting position after each cycle, so it can loop properly
 - **Accessing Excel Files**: Verify correct file path and permissions.
 - **Handling Unusual Excel Data**: Script converts most data types to strings but may encounter issues with unconventional data.
-
----
-
-This streamlined README provides essential information in a structured format, making it easier for users to understand and execute your script efficiently.
